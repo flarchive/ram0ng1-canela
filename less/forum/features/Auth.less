@@ -1,0 +1,571 @@
+// =====================================================================
+// /login e /signup: as páginas cheias do Discourse (`.login-fullpage`,
+// `.signup-fullpage`). O formulário é o modal do core desenhado dentro da
+// página (features/auth): aqui ele perde a cara de modal (posição, animação,
+// fundo escurecido) e vira um cartão no meio do fundo tingido, com o logo
+// do fórum em cima. Sem barra lateral nem hambúrguer, como no Discourse.
+// =====================================================================
+
+// Sem o cabeçalho (busca, botões, idioma), a barra lateral e o rodapé: só o
+// logo do fórum, no próprio formulário. A classe no <html> vem do
+// PreBootShell (página aberta direto) e do AuthPage (navegando).
+html.CanelaAuthRoute {
+  .App-header,
+  .App-drawer,
+  .App-footer,
+  #canela-sidebar,
+  .CanelaSidebar-backdrop {
+    display: none !important;
+  }
+
+  .App {
+    padding-top: 0;
+  }
+
+  .App .App-content,
+  .App .App-content > #content {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+}
+
+.CanelaAuthPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 40px 16px;
+
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  &-logo {
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    max-width: 100%;
+    color: var(--cn-primary);
+    text-decoration: none !important;
+  }
+
+  &-logoImage {
+    display: block;
+    max-width: 260px;
+    max-height: 48px;
+    object-fit: contain;
+
+    &--dark {
+      display: none;
+    }
+  }
+
+  [data-theme^=dark] &-logoImage--light {
+    display: none;
+  }
+
+  [data-theme^=dark] &-logoImage--dark {
+    display: block;
+  }
+
+  &-logoText {
+    font-size: var(--cn-font-up-4);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  // Só o carregamento do formulário, nunca o spinner de dentro de um botão.
+  &-inner > .LoadingIndicator-container {
+    padding: 48px 0;
+  }
+
+  // "Voltar para entrar", debaixo do cartão.
+  &-back {
+    margin: 0;
+    text-align: center;
+    font-size: var(--cn-font-down-1);
+
+    a {
+      color: var(--cn-link);
+    }
+  }
+
+  // O subtítulo escolhido no admin, logo abaixo do título.
+  &-subtitle {
+    margin: 0;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-0);
+    line-height: 1.5;
+  }
+
+  // O "ou" entre os botões sociais e o formulário.
+  &-or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--cn-primary-low);
+    }
+  }
+
+  // Sem login social, nada de "ou".
+  .LogInButtons:empty + &-or {
+    display: none;
+  }
+}
+
+// O "modal" na página: estático, visível, sem animação nem ✕.
+.CanelaAuthPage .Modal.CanelaAuthForm {
+  position: static;
+  top: auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none;
+  border: 1px solid var(--cn-primary-low);
+  border-radius: var(--cn-radius-large);
+  box-shadow: var(--cn-shadow-card);
+  background: var(--cn-surface);
+
+  .Modal-content {
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+    padding-top: 0;
+    border-radius: inherit;
+    box-shadow: none;
+  }
+
+  .Modal-close {
+    display: none;
+  }
+}
+
+// No celular o core prende o `.App-titleControl` no cabeçalho (fixo, com
+// `!important`, dentro do `.App.affix`); o modal comum mora fora do #app e
+// escapa disso, mas o da página não.
+.App .CanelaAuthPage .Modal-header .App-titleControl {
+  position: static !important;
+  top: auto;
+  left: auto;
+  width: auto;
+  padding: 0;
+  white-space: normal;
+}
+
+// O título grande da página do Discourse ("Boas-vindas outra vez", font-up-6).
+@media @tablet-up {
+  .CanelaAuthPage .Modal.CanelaAuthForm {
+    --cn-auth-pad: 36px;
+
+    .Modal-header {
+      min-height: 0;
+      padding: var(--cn-auth-pad) var(--cn-auth-pad) 0;
+
+      h3 {
+        font-size: var(--cn-font-up-4);
+        font-weight: 700;
+        line-height: 1.2;
+      }
+    }
+
+    .Modal-body {
+      padding: 16px var(--cn-auth-pad) var(--cn-auth-pad);
+    }
+
+    .Modal-footer {
+      margin: 0 var(--cn-auth-pad);
+      padding: 12px 0 32px;
+      border-top: 1px solid var(--cn-primary-low);
+    }
+
+    // Login e cadastro têm rodapé: o corpo acaba mais perto do traço.
+    &.LogInModal .Modal-body,
+    &.SignUpModal .Modal-body {
+      padding-bottom: 8px;
+    }
+  }
+}
+
+// Redefinir senha (o pedido e a troca): o formulário alinhado à esquerda,
+// como o do login, e o botão primário da largura do cartão.
+.CanelaAuthPage .CanelaAuthForm {
+  .Form--centered {
+    --gap: 16px;
+    text-align: left;
+
+    .FormControl {
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  .helpText {
+    margin: 0 0 4px;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-0);
+    font-weight: 400;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .Button--primary.Button--block,
+  &.ForgotPasswordModal .Form-controls .Button {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  // O pedido de redefinição: na página não há rodapé de borda a borda.
+  &.ForgotPasswordModal .Form-controls {
+    margin: 8px 0 0;
+    padding: 0;
+    border-top: 0;
+  }
+}
+
+@media @phone {
+  .CanelaAuthPage {
+    padding: 20px 16px 40px;
+  }
+
+  .CanelaAuthPage .Modal.CanelaAuthForm {
+    .Modal-header {
+      min-height: 0;
+      padding: 24px 16px 0;
+
+      h3 {
+        font-size: var(--cn-font-up-3);
+      }
+    }
+
+    .Modal-body {
+      padding: 16px 16px 8px;
+    }
+
+    .Modal-footer {
+      margin: 0 16px;
+      padding: 12px 0 20px;
+      border-top: 1px solid var(--cn-primary-low);
+    }
+  }
+}
+
+// =====================================================================
+// Os três leiautes (Administração → Entrar e cadastrar).
+// =====================================================================
+
+// Uma coluna só (cartão e tela dividida): os botões sociais em cima, o "ou"
+// e o formulário — e não as duas colunas do modal com login social.
+.CanelaAuthPage--layout-card,
+.CanelaAuthPage--layout-split {
+  .Modal.CanelaAuthForm .Modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .Modal.CanelaAuthForm .Form {
+    padding-right: 0;
+  }
+
+  // Os botões sociais juntos (8px), na largura toda: o modal de duas colunas
+  // os prende no início (`align-self: start`) e o core dá 20px abaixo de cada.
+  .Modal.CanelaAuthForm .LogInButtons {
+    align-self: stretch;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    .LogInButtonContainer {
+      margin: 0;
+    }
+
+    .LogInButton.Button {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 42px;
+      margin: 0;
+    }
+  }
+}
+
+// --- Cartão único (o padrão) ------------------------------------------
+.CanelaAuthPage--layout-card .Modal.CanelaAuthForm {
+  border-color: transparent;
+  border-radius: calc(var(--cn-radius-large) * 1.5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme^=dark] .CanelaAuthPage--layout-card .Modal.CanelaAuthForm {
+  border-color: var(--cn-primary-low);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+// --- Discourse: sem cartão, o formulário à esquerda e os botões sociais à
+// direita, separados por um traço (`.login-left-side` / `.login-right-side`).
+.CanelaAuthPage--layout-discourse {
+  .CanelaAuthPage-inner {
+    max-width: 460px;
+  }
+
+  .CanelaAuthPage-or {
+    display: none;
+  }
+
+  .Modal.CanelaAuthForm,
+  .Modal.CanelaAuthForm .Modal-content {
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+}
+
+@media @tablet-up {
+  .CanelaAuthPage--layout-discourse .CanelaAuthPage-inner:has(.LogInButtons:not(:empty)) {
+    max-width: 840px;
+  }
+
+  .CanelaAuthPage--layout-discourse .Modal.CanelaAuthForm:has(.LogInButtons:not(:empty)) {
+    > .Modal-content > form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+    }
+
+    .Modal-body {
+      display: contents;
+    }
+
+    .Modal-header {
+      grid-row: 1;
+      grid-column: 1;
+      padding: 0 48px 0 0;
+    }
+
+    .Modal-body > .CanelaAuthPage-subtitle {
+      grid-row: 2;
+      grid-column: 1;
+      margin: 8px 48px 0 0;
+    }
+
+    .Modal-body > .Form {
+      grid-row: 3;
+      grid-column: 1;
+      padding: 20px 48px 0 0;
+    }
+
+    .Modal-footer {
+      grid-row: 4;
+      grid-column: 1;
+      margin: 0 48px 0 0;
+      padding-bottom: 0;
+    }
+
+    .Modal-body > .LogInButtons {
+      grid-row: ~"1 / 5";
+      grid-column: 2;
+      align-self: center;
+      gap: 12px;
+      margin: 0;
+      padding: 8px 0 8px 48px;
+      border-left: 1px solid var(--cn-primary-low);
+
+      .LogInButtonContainer {
+        margin: 0;
+      }
+
+      .LogInButton.Button {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 0;
+      }
+    }
+  }
+
+  // Sem cartão, sem a moldura de dentro: o título encosta na margem.
+  .CanelaAuthPage--layout-discourse .Modal.CanelaAuthForm {
+    --cn-auth-pad: 0px;
+
+    .Modal-header h3 {
+      font-size: var(--cn-font-up-5);
+    }
+  }
+}
+
+// --- Tela dividida: o painel na cor do tema à esquerda (ou a imagem de
+// fundo, quando escolhida), o formulário à direita sobre a superfície.
+.CanelaAuthPage--layout-split {
+  padding: 0;
+  align-items: stretch;
+  background: var(--cn-surface);
+
+  .CanelaAuthPage-inner {
+    align-self: center;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    box-sizing: border-box;
+  }
+
+  // O logo já está no painel.
+  .CanelaAuthPage-inner > .CanelaAuthPage-logo {
+    display: none;
+  }
+
+  .Modal.CanelaAuthForm,
+  .Modal.CanelaAuthForm .Modal-content {
+    border: 0;
+    background: none;
+    box-shadow: none;
+    --cn-auth-pad: 0px;
+  }
+}
+
+.CanelaAuthPanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  flex: 0 0 50%;
+  box-sizing: border-box;
+  padding: 48px 56px;
+  overflow: hidden;
+  color: #fff;
+  background: radial-gradient(120% 90% at 0% 0%, ~"color-mix(in srgb, var(--cn-accent) 70%, #fff)" 0%, var(--cn-accent) 45%, ~"color-mix(in srgb, var(--cn-accent) 70%, #000)" 100%);
+
+  html.CanelaBg--image & {
+    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55)), var(--cn-bg-image) center / cover no-repeat;
+  }
+
+  // Os anéis claros no canto, como textura.
+  &::after {
+    content: "";
+    position: absolute;
+    right: -80px;
+    bottom: -80px;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 60px rgba(255, 255, 255, 0.05), 0 0 0 120px rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+  }
+
+  html.CanelaBg--image &::after {
+    display: none;
+  }
+
+  &-logo .CanelaAuthPage-logo {
+    color: #fff;
+  }
+
+  // A versão escura do logo (clara sobre o painel), quando houver.
+  &-logo .CanelaAuthPage-logoImage--dark {
+    display: block;
+  }
+
+  &-logo .CanelaAuthPage-logoImage--dark ~ .CanelaAuthPage-logoImage--light,
+  &-logo .CanelaAuthPage-logoImage--light:has(+ .CanelaAuthPage-logoImage--dark) {
+    display: none;
+  }
+
+  &-body {
+    position: relative;
+    z-index: 1;
+    max-width: 460px;
+    margin-bottom: 10vh;
+  }
+
+  // `.CanelaAuthPanel` duas vezes: o `.Canela h2` do tema é mais forte.
+  & &-title {
+    margin: 0 0 12px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  &-text {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+}
+
+// No celular e no tablet estreito, a tela dividida vira uma coluna, sem o
+// painel; o logo volta para cima do formulário.
+@media (max-width: 900px) {
+  .CanelaAuthPanel {
+    display: none;
+  }
+
+  .CanelaAuthPage--layout-split .CanelaAuthPage-inner > .CanelaAuthPage-logo {
+    display: inline-flex;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Pré-visualização do admin (shell/preview.ts): o aviso no pé da tela.
+// ---------------------------------------------------------------------
+.CanelaPreviewBanner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 32px);
+  box-sizing: border-box;
+  padding: 10px 12px 10px 16px;
+  border-radius: 999px;
+  background: rgba(20, 20, 30, 0.88);
+  color: #fff;
+  font-size: var(--cn-font-down-1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+
+  &-close {
+    flex: none;
+    padding: 4px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+    }
+  }
+}
