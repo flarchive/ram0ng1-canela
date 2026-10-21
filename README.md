@@ -2,15 +2,15 @@
 
 > **Read-only archive of released versions of ramon/canela.** Not for installation: use [Packagist](https://packagist.org/packages/ramon/canela) or the [upstream repository](https://github.com/ram0ng1/canela).
 
-**1** versions archived · Latest: [`v0.0.1`](https://github.com/flarchive/ramon-canela/tree/archive/v0.0.1) · License: `MIT` · Flarum: `^2.0.0`
+**0** versions archived · Latest: [`v0.0.17`](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.17) · License: `MIT` · Flarum: `^2.0.0`
 
 ## Archived Versions
 
 | Version | Released | Flarum | Source |
 |---|---|---|---|
-| `v0.0.1` | 2026-10-19 | `^2.0.0` | [Browse](https://github.com/flarchive/ramon-canela/tree/archive/v0.0.1) |
+| — | — | — | — |
 
-Catalog entry: [packages/ramon-canela.json](https://github.com/flarchive/archive-index/blob/main/packages/ramon-canela.json)
+Catalog entry: [packages/ram0ng1-canela.json](https://github.com/flarchive/archive-index/blob/main/packages/ram0ng1-canela.json)
 
 ## About this archive
 
