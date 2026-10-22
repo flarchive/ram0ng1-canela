@@ -2,13 +2,24 @@
 
 > **Read-only archive of released versions of ramon/canela.** Not for installation: use [Packagist](https://packagist.org/packages/ramon/canela) or the [upstream repository](https://github.com/ram0ng1/canela).
 
-**0** versions archived · Latest: [`v0.0.20`](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.20) · License: `MIT` · Flarum: `^2.0.0`
+**20** versions archived · Latest: [`v0.0.20`](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.20) · License: `MIT` · Flarum: `^2.0.0`
 
 ## Archived Versions
 
 | Version | Released | Flarum | Source |
 |---|---|---|---|
-| — | — | — | — |
+| `v0.0.1` | 2026-10-19 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.1) |
+| `v0.0.10` | 2026-10-19 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.10) |
+| `v0.0.11` | 2026-10-19 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.11) |
+| `v0.0.12` | 2026-10-20 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.12) |
+| `v0.0.13` | 2026-10-20 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.13) |
+| `v0.0.14` | 2026-10-20 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.14) |
+| `v0.0.15` | 2026-10-20 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.15) |
+| `v0.0.16` | 2026-10-20 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.16) |
+| `v0.0.17` | 2026-10-21 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.17) |
+| `v0.0.18` | 2026-10-21 | `^2.0.0` | [Browse](https://github.com/flarchive/ram0ng1-canela/tree/archive/v0.0.18) |
+
+[View all 20 versions](https://github.com/flarchive/ram0ng1-canela/tags)
 
 Catalog entry: [packages/ram0ng1-canela.json](https://github.com/flarchive/archive-index/blob/main/packages/ram0ng1-canela.json)
 
