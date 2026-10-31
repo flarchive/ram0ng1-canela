@@ -1,0 +1,14 @@
+node_modules
+vendor
+composer.lock
+.phpunit.cache
+CLAUDE.md
+.claude
+
+# Notas internas (não vão para o repositório público)
+docs/DISCOURSE-PARITY.md
+docs/OPTIMIZATION-LOG.md
+docs/design/
+
+# Banco e config dos testes de integração (flarum/testing)
+tests/integration/tmp
