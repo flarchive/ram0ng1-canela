@@ -1,0 +1,23 @@
+includes:
+    - vendor/flarum/phpstan/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - extend.php
+        - extend
+        - src
+        - migrations
+        # As relações que as extensões opcionais põem nos modelos do core
+        # (Discussion::tags, etc.) vêm dos extend.php delas, como no monorepo do core.
+        - vendor/flarum/tags/extend.php
+        - vendor/flarum/flags/extend.php
+        - vendor/flarum/suspend/extend.php
+    excludePaths:
+        analyse:
+            - *.blade.php
+            # Só lido para descobrir as relações, não analisado.
+            - vendor/flarum/tags/extend.php
+            - vendor/flarum/flags/extend.php
+            - vendor/flarum/suspend/extend.php
+    databaseMigrationsPath: ['migrations']
