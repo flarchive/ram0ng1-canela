@@ -1,0 +1,120 @@
+/*
+ * O controle de notificações do tópico: um botão com o
+ * sino do nível atual e um menu em que cada nível tem título e descrição.
+ *
+ * Os níveis são os três do flarum/subscriptions (seguir, normal, ignorar),
+ * com os nomes Acompanhando, Normal e Silenciado. O tema não usa
+ * o SubscriptionMenu da extensão porque o botão dele é dividido (seguir com um
+ * clique + seta), e aqui o clique sempre abre o menu.
+ */
+import { extend } from 'flarum/common/extend';
+import Component, { type ComponentAttrs } from 'flarum/common/Component';
+import Badge from 'flarum/common/components/Badge';
+import Dropdown from 'flarum/common/components/Dropdown';
+import type ItemList from 'flarum/common/utils/ItemList';
+import type Mithril from 'mithril';
+import DetailedDropdownItem from 'flarum/common/components/DetailedDropdownItem';
+import Icon from 'flarum/common/components/Icon';
+import classList from 'flarum/common/utils/classList';
+import Discussion from 'flarum/common/models/Discussion';
+
+import { t } from '../../utils/settings';
+import { bellIcon } from '../../utils/bells';
+
+export type SubscriptionLevel = 'follow' | 'ignore' | null;
+
+interface Level {
+  value: SubscriptionLevel;
+  key: 'watching' | 'normal' | 'muted';
+  icon: string;
+}
+
+export const LEVELS: Level[] = [
+  {
+    value: 'follow',
+    key: 'watching',
+    get icon() {
+      return bellIcon('watching');
+    },
+  },
+  { value: null, key: 'normal', icon: bellIcon('normal') },
+  { value: 'ignore', key: 'muted', icon: bellIcon('muted') },
+];
+
+export function currentLevel(discussion: Discussion): Level {
+  const value = ((discussion as any).subscription?.() ?? null) as SubscriptionLevel;
+
+  return LEVELS.find((level) => level.value === value) || LEVELS[1];
+}
+
+/**
+ * O badge do flarum/subscriptions ao lado do título (⭐ "Seguindo", 👁
+ * "Ignorando") com o ícone e o nome do nível escolhido no sino: o sino
+ * tocando em "Acompanhando" e o cortado em "Silenciado". "Normal" continua
+ * sem badge.
+ */
+export function installSubscriptionBadge(): void {
+  extend(Discussion.prototype, 'badges', function (this: Discussion, badges: ItemList<Mithril.Children>) {
+    if (!badges.has('subscription')) return;
+
+    const level = currentLevel(this);
+
+    if (level.value === null) return;
+
+    badges.setContent(
+      'subscription',
+      <Badge
+        label={t(`topic.notifications.${level.key}`)}
+        icon={level.icon}
+        type={level.value === 'follow' ? 'following' : 'ignoring'}
+        tabindex="0"
+      />
+    );
+  });
+}
+
+export interface TopicNotificationsAttrs extends ComponentAttrs {
+  discussion: Discussion;
+  /** Só o sino, redondo — a versão da linha do tempo. */
+  compact?: boolean;
+}
+
+export default class TopicNotifications extends Component<TopicNotificationsAttrs> {
+  view() {
+    const discussion = this.attrs.discussion;
+    const current = currentLevel(discussion);
+
+    return (
+      <Dropdown
+        className={classList('CanelaNotifications', `CanelaNotifications--${current.key}`, { 'CanelaNotifications--compact': this.attrs.compact })}
+        buttonClassName={classList('Button CanelaNotifications-button', { 'Button--icon': this.attrs.compact })}
+        menuClassName="CanelaNotifications-menu"
+        icon={current.icon}
+        // Sino cheio x vazado é o que distingue "Acompanhando" de "Normal": o
+        // estilo de ícone forçado pelo fórum não pode igualar os dois.
+        noStyleOverride
+        label={this.attrs.compact ? '' : t(`topic.notifications.${current.key}`)}
+        caretIcon={this.attrs.compact ? '' : 'fas fa-caret-down'}
+        accessibleToggleLabel={t('topic.notifications.toggle', { level: t(`topic.notifications.${current.key}`) })}
+        tooltip={this.attrs.compact ? t(`topic.notifications.${current.key}`) : undefined}
+      >
+        {LEVELS.map((level) => (
+          <DetailedDropdownItem
+            icon={<Icon name={level.icon} className="Button-icon" noStyleOverride />}
+            label={t(`topic.notifications.${level.key}`)}
+            description={t(`topic.notifications.${level.key}_description`)}
+            active={level.value === current.value}
+            onclick={() => {
+              if (level.value !== current.value) discussion.save({ subscription: level.value });
+            }}
+          />
+        ))}
+      </Dropdown>
+    );
+  }
+}
+
+/** "Você receberá notificações porque…" — o texto embaixo do botão no rodapé. */
+export function notificationReason(discussion: Discussion): string {
+  return t(`topic.notifications.${currentLevel(discussion).key}_reason`);
+}
